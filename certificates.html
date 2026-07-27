@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>More Certificates · Chithira Ravi</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Google Fonts: Inter + Space Grotesk (matching main) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <style>
+    /* ----- DARK DOUBLE-SHADE THEME (mirrors main) ----- */
+    :root {
+      --primary: #c9a96e;
+      --primary-dark: #b38f4a;
+      --secondary: #e4cba8;
+      --bg-dark-1: #14131b;
+      --bg-dark-2: #1e1d2b;
+      --bg-card: #232231;
+      --bg-card-hover: #2a2940;
+      --text-light: #ece9e0;
+      --text-muted: #b4afaa;
+      --text-soft: #d6d0c5;
+      --shadow-card: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
+      --shadow-hover: 0 30px 56px -12px rgba(0, 0, 0, 0.9);
+      --radius-card: 28px;
+      --radius-pill: 60px;
+      --transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+      --border-glow: 1px solid rgba(201, 169, 110, 0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark-1);
+      color: var(--text-light);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at 20% 30%, var(--bg-dark-2) 0%, var(--bg-dark-1) 70%);
+      padding: 2rem 0 4rem;
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    /* ----- PAGE TITLE (gold accent) ----- */
+    .page-title {
+      font-weight: 700;
+      font-size: 2.8rem;
+      color: var(--text-light);
+      letter-spacing: -1.5px;
+      position: relative;
+      display: inline-block;
+    }
+    .page-title span {
+      color: var(--primary);
+    }
+    .page-title::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -12px;
+      width: 80px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 10px;
+      transform: translateX(-50%);
+      opacity: 0.4;
+    }
+
+    .sub-head {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      margin-top: 0.5rem;
+    }
+
+    /* ----- CERTIFICATE FLIP CARDS ----- */
+    .cert-card {
+      border: none;
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      transition: var(--transition);
+      background: var(--bg-card);
+      height: 100%;
+      border: var(--border-glow);
+      display: flex;
+      flex-direction: column;
+      perspective: 1200px;
+    }
+
+    .cert-card:hover {
+      transform: translateY(-12px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(201, 169, 110, 0.2);
+    }
+
+    .cert-flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      transform-style: preserve-3d;
+      border-radius: var(--radius-card);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cert-card.flipped .cert-flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .cert-flip-front,
+    .cert-flip-back {
+      position: relative;
+      width: 100%;
+      backface-visibility: hidden;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-card);
+    }
+
+    .cert-flip-front {
+      z-index: 2;
+    }
+
+    .cert-flip-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: rotateY(180deg);
+      height: 100%;
+      background: var(--bg-card-hover);
+      border: var(--border-glow);
+      padding: 24px 20px 20px;
+      justify-content: flex-start;
+      align-items: flex-start;
+      text-align: left;
+      gap: 6px;
+      box-shadow: inset 0 0 0 1px rgba(201, 169, 110, 0.05);
+      overflow-y: auto;
+    }
+
+    .cert-flip-back h5 {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--primary);
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
+      border-bottom: 2px solid rgba(201, 169, 110, 0.15);
+      padding-bottom: 6px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    .cert-flip-back .cert-detail {
+      width: 100%;
+      color: var(--text-soft);
+      font-size: 0.85rem;
+      line-height: 1.6;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .cert-flip-back .cert-detail i {
+      color: var(--primary);
+      width: 20px;
+      margin-top: 3px;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .cert-flip-back .cert-detail strong {
+      color: var(--text-light);
+    }
+
+    .cert-img-wrapper {
+      width: 100%;
+      height: 220px;
+      overflow: hidden;
+      background: #1a1925;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .cert-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+      filter: brightness(0.9) contrast(1.05);
+    }
+
+    .cert-card:hover .cert-img-wrapper img {
+      transform: scale(1.04);
+      filter: brightness(1);
+    }
+
+    .cert-img-wrapper .click-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(20, 19, 27, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: var(--transition);
+      backdrop-filter: blur(3px);
+      pointer-events: none;
+    }
+
+    .cert-img-wrapper:hover .click-overlay {
+      opacity: 1;
+    }
+
+    .cert-img-wrapper .click-overlay i {
+      font-size: 2.2rem;
+      color: var(--primary);
+      background: var(--bg-dark-1);
+      padding: 14px 16px;
+      border-radius: 60px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      transform: scale(0.8);
+      transition: var(--transition);
+    }
+
+    .cert-img-wrapper:hover .click-overlay i {
+      transform: scale(1);
+    }
+
+    .cert-card .cert-body {
+      padding: 18px 18px 22px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cert-card .cert-body h5 {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-light);
+      letter-spacing: -0.3px;
+      margin-bottom: 2px;
+    }
+
+    .cert-card .cert-body .cert-issuer {
+      color: var(--primary);
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .cert-card .cert-body .cert-date {
+      color: var(--text-muted);
+      font-size: 0.7rem;
+    }
+
+    .cert-badge {
+      display: inline-block;
+      background: rgba(201, 169, 110, 0.08);
+      color: var(--primary);
+      padding: 3px 14px;
+      border-radius: 40px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border: 1px solid rgba(201, 169, 110, 0.1);
+      margin-top: 4px;
+      width: fit-content;
+    }
+
+    .cert-flip-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(201, 169, 110, 0.08);
+      color: var(--primary);
+      padding: 5px 14px 5px 10px;
+      border-radius: 40px;
+      border: 1px solid rgba(201, 169, 110, 0.15);
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 6px;
+      width: fit-content;
+      align-self: flex-start;
+      backdrop-filter: blur(4px);
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .cert-flip-trigger i {
+      font-size: 0.8rem;
+      transition: var(--transition);
+    }
+
+    .cert-flip-trigger:hover {
+      background: rgba(201, 169, 110, 0.15);
+      border-color: var(--primary);
+      transform: scale(1.02);
+    }
+
+    .cert-flip-back .cert-flip-trigger-back {
+      margin-top: 8px;
+      align-self: flex-start;
+      flex-shrink: 0;
+    }
+
+    /* ----- BACK BUTTON (matches main style) ----- */
+    .btn-back {
+      background: transparent;
+      border: 1px solid rgba(201, 169, 110, 0.2);
+      color: var(--text-soft);
+      padding: 0.7rem 2.4rem;
+      border-radius: var(--radius-pill);
+      font-weight: 600;
+      transition: var(--transition);
+      backdrop-filter: blur(4px);
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-back:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #14131b;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(201, 169, 110, 0.15);
+    }
+
+    /* ----- LIGHTBOX (full screen) dark immersive ----- */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 15, 0.92);
+      backdrop-filter: blur(18px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
+    .lightbox.active {
+      display: flex;
+    }
+    .lightbox img {
+      max-width: 90%;
+      max-height: 85%;
+      border-radius: 24px;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8);
+      object-fit: contain;
+      border: 2px solid rgba(201, 169, 110, 0.08);
+      animation: fadeIn 0.25s ease;
+    }
+    .lightbox .close-btn {
+      position: absolute;
+      top: 28px;
+      right: 36px;
+      font-size: 2.6rem;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.02);
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .lightbox .close-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      transform: rotate(90deg);
+      color: var(--primary);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* ----- RESPONSIVE ----- */
+    @media (max-width: 576px) {
+      .cert-img-wrapper {
+        height: 160px;
+      }
+      .page-title {
+        font-size: 2.2rem;
+      }
+      .lightbox .close-btn {
+        top: 16px;
+        right: 16px;
+        width: 44px;
+        height: 44px;
+        font-size: 2rem;
+      }
+      .cert-flip-back {
+        padding: 16px 14px;
+      }
+      .cert-flip-back .cert-detail {
+        font-size: 0.78rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container py-3">
+
+  <!-- Header with gold accent -->
+  <div class="text-center mb-5">
+    <h2 class="page-title">More <span>Certificates</span></h2>
+    <p class="sub-head"><i class="fas fa-sync-alt me-2" style="color: var(--primary);"></i> Click <span style="color:var(--primary);">Flip</span> to see details • Click images to enlarge</p>
+  </div>
+
+  <!-- Certificates grid -->
+  <div class="row g-4 justify-content-center">
+
+    <!-- Certificate 5 - ASESORA LEGAL Project (LCC Computer Education) -->
+    <div class="col-md-6 col-lg-5">
+      <div class="cert-card" id="cert5">
+        <div class="cert-flip-inner">
+          <div class="cert-flip-front">
+            <div class="cert-img-wrapper" data-image="lcc.jpg">
+              <img src="lcc.jpg" alt="ASESORA LEGAL Project Certificate" />
+              <div class="click-overlay"><i class="fas fa-search-plus"></i></div>
+            </div>
+            <div class="cert-body">
+              <h5>⚖️ ASESORA LEGAL Project</h5>
+              <div class="cert-issuer">LCC Computer Education</div>
+              <div class="cert-date"><i class="far fa-calendar-alt me-1"></i> 2023</div>
+              <span class="cert-badge"><i class="fas fa-certificate me-1"></i> Academic Project</span>
+              <span class="cert-flip-trigger" data-cert="cert5"><i class="fas fa-sync-alt"></i> </span>
+            </div>
+          </div>
+          <div class="cert-flip-back">
+            <h5>⚖️ ASESORA LEGAL Project</h5>
+            <div class="cert-detail"><i class="fas fa-info-circle"></i> <strong>Issuer:</strong> LCC Computer Education</div>
+            <div class="cert-detail"><i class="fas fa-calendar"></i> <strong>Date:</strong> March 27, 2023</div>
+            <div class="cert-detail"><i class="fas fa-tag"></i> <strong>Type:</strong> Academic Project</div>
+            <div class="cert-detail"><i class="fas fa-user-graduate"></i> <strong>Student:</strong> CHITHIRA RAVI - 6th Semester BCA</div>
+            <div class="cert-detail"><i class="fas fa-university"></i> <strong>College:</strong> St. Mary's College of Commerce & Management Studies, Thuruthipily</div>
+            <div class="cert-detail"><i class="fas fa-clock"></i> <strong>Duration:</strong> 6 Months</div>
+            <div class="cert-detail"><i class="fas fa-code"></i> <strong>Technology:</strong> Python</div>
+            <div class="cert-detail"><i class="fas fa-file-alt"></i> Description: This is to certify that CHITHIRA RAVI, 6th semester BCA student of ST. MARY'S COLLEGE OF COMMERCE & MANAGEMENT STUDIES, THURUTHIPILY has successfully completed a project titled "ASESORA LEGAL" from our organization. The project was incorporated in PYTHON and was implemented successfully.</div>
+            <span class="cert-flip-trigger cert-flip-trigger-back" data-cert="cert5"><i class="fas fa-undo-alt"></i> Flip Back</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Certificate 6 - GALERIE 'D' ART Project (Progressive Software Solutions) -->
+    <div class="col-md-6 col-lg-5">
+      <div class="cert-card" id="cert6">
+        <div class="cert-flip-inner">
+          <div class="cert-flip-front">
+            <div class="cert-img-wrapper" data-image="galleria.jpeg">
+              <img src="galleria.jpeg" alt="GALERIE 'D' ART Project Certificate" />
+              <div class="click-overlay"><i class="fas fa-search-plus"></i></div>
+            </div>
+            <div class="cert-body">
+              <h5>🖼️ GALERIE 'D' ART Project</h5>
+              <div class="cert-issuer">Progressive Software Solutions & Training</div>
+              <div class="cert-date"><i class="far fa-calendar-alt me-1"></i> 2022</div>
+              <span class="cert-badge"><i class="fas fa-certificate me-1"></i> Academic Project</span>
+              <span class="cert-flip-trigger" data-cert="cert6"><i class="fas fa-sync-alt"></i> </span>
+            </div>
+          </div>
+          <div class="cert-flip-back">
+            <h5>🖼️ GALERIE 'D' ART Project</h5>
+            <div class="cert-detail"><i class="fas fa-info-circle"></i> <strong>Issuer:</strong> Progressive Software Solutions & Training</div>
+            <div class="cert-detail"><i class="fas fa-calendar"></i> <strong>Date:</strong> 27th November 2022</div>
+            <div class="cert-detail"><i class="fas fa-tag"></i> <strong>Type:</strong> Academic Project</div>
+            <div class="cert-detail"><i class="fas fa-user-graduate"></i> <strong>Student:</strong> Ms. Chithira Ravi</div>
+            <div class="cert-detail"><i class="fas fa-university"></i> <strong>College:</strong> St. Mary's College of Commerce and Management Studies, Thuruthipilly</div>
+            <div class="cert-detail"><i class="fas fa-graduation-cap"></i> <strong>Semester:</strong> 5th Semester BCA</div>
+            <div class="cert-detail"><i class="fas fa-code"></i> <strong>Technology:</strong> PHP, MySQL</div>
+            <div class="cert-detail"><i class="fas fa-clock"></i> <strong>Duration:</strong> 2nd June 2022 to 29th October 2022</div>
+            <div class="cert-detail"><i class="fas fa-file-alt"></i> Description: This is to certify that Ms. Chithira Ravi, 5th semester BCA student of St. Mary's College of Commerce and Management Studies, Thuruthipilly has completed her mini project in partial fulfillment of the requirement for the award of BCA under M.G University. Project Name: GALERIE 'D' ART. We found her as quick learner and good team player throughout the period.</div>
+            <span class="cert-flip-trigger cert-flip-trigger-back" data-cert="cert6"><i class="fas fa-undo-alt"></i> Flip Back</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Back button (styled like main) -->
+  <div class="text-center mt-5 pt-3">
+    <a href="index.html#certificates" class="btn-back">
+      <i class="fas fa-arrow-left"></i> Back to Certificates
+    </a>
+  </div>
+</div>
+
+<!-- ========== LIGHTBOX ========== -->
+<div class="lightbox" id="lightbox">
+  <span class="close-btn" id="closeLightbox"><i class="fas fa-times"></i></span>
+  <img id="lightboxImg" src="" alt="Full view" />
+</div>
+
+<script>
+  (function() {
+    // LIGHTBOX
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const closeBtn = document.getElementById('closeLightbox');
+
+    const wrappers = document.querySelectorAll('.cert-img-wrapper');
+
+    wrappers.forEach(wrapper => {
+      wrapper.addEventListener('click', function(e) {
+        const imgSrc = this.getAttribute('data-image');
+        if (imgSrc) {
+          lightboxImg.src = imgSrc;
+          lightbox.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    closeBtn.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', function(e) {
+      if (e.target === this) closeLightbox();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    // FLIP LOGIC - Certificates
+    document.querySelectorAll('.cert-flip-trigger').forEach(trigger => {
+      trigger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const certId = this.getAttribute('data-cert');
+        const card = document.getElementById(certId);
+        if (card) {
+          card.classList.toggle('flipped');
+        }
+      });
+    });
+
+  })();
+</script>
+
+</body>
+</html>

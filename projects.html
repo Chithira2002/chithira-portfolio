@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>More Projects · Chithira Ravi</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Google Fonts: Inter + Space Grotesk (matching main) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <style>
+    /* ----- DARK DOUBLE-SHADE THEME (mirrors main) ----- */
+    :root {
+      --primary: #c9a96e;
+      --primary-dark: #b38f4a;
+      --secondary: #e4cba8;
+      --bg-dark-1: #14131b;
+      --bg-dark-2: #1e1d2b;
+      --bg-card: #232231;
+      --bg-card-hover: #2a2940;
+      --text-light: #ece9e0;
+      --text-muted: #b4afaa;
+      --text-soft: #d6d0c5;
+      --shadow-card: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
+      --shadow-hover: 0 30px 56px -12px rgba(0, 0, 0, 0.9);
+      --radius-card: 28px;
+      --radius-pill: 60px;
+      --transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+      --border-glow: 1px solid rgba(201, 169, 110, 0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark-1);
+      color: var(--text-light);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at 20% 30%, var(--bg-dark-2) 0%, var(--bg-dark-1) 70%);
+      padding: 2rem 0 4rem;
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    /* ----- PAGE TITLE (gold accent) ----- */
+    .page-title {
+      font-weight: 700;
+      font-size: 2.8rem;
+      color: var(--text-light);
+      letter-spacing: -1.5px;
+      position: relative;
+      display: inline-block;
+    }
+    .page-title span {
+      color: var(--primary);
+    }
+    .page-title::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -12px;
+      width: 80px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 10px;
+      transform: translateX(-50%);
+      opacity: 0.4;
+    }
+
+    .sub-head {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      margin-top: 0.5rem;
+    }
+
+    /* ===== FLIP CARD CONTAINER (matches main portfolio) ===== */
+    .project-card {
+      border: none;
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      transition: var(--transition);
+      background: var(--bg-card);
+      height: 100%;
+      border: var(--border-glow);
+      display: flex;
+      flex-direction: column;
+      perspective: 1200px;
+    }
+
+    .project-card:hover {
+      transform: translateY(-12px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(201, 169, 110, 0.2);
+    }
+
+    /* inner wrapper for 3D flip */
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      transform-style: preserve-3d;
+      border-radius: var(--radius-card);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card.flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    /* front & back faces */
+    .flip-front,
+    .flip-back {
+      position: relative;
+      width: 100%;
+      backface-visibility: hidden;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-card);
+    }
+
+    .flip-front {
+      z-index: 2;
+    }
+
+    .flip-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: rotateY(180deg);
+      height: 100%;
+      background: var(--bg-card-hover);
+      border: var(--border-glow);
+      padding: 20px 18px 18px;
+      justify-content: flex-start;
+      align-items: flex-start;
+      text-align: left;
+      gap: 3px;
+      box-shadow: inset 0 0 0 1px rgba(201, 169, 110, 0.05);
+      overflow-y: auto;
+    }
+
+    .flip-back h5 {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--primary);
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
+      border-bottom: 2px solid rgba(201, 169, 110, 0.15);
+      padding-bottom: 5px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    .flip-back .project-detail {
+      width: 100%;
+      color: var(--text-soft);
+      font-size: 0.82rem;
+      line-height: 1.5;
+      margin-bottom: 1px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .flip-back .project-detail i {
+      color: var(--primary);
+      width: 18px;
+      margin-top: 2px;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    /* ----- READ MORE / READ LESS ----- */
+    .extra-content {
+      display: none;
+      width: 100%;
+    }
+    .extra-content.show {
+      display: block;
+    }
+
+    .read-more-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      color: var(--primary);
+      border: none;
+      padding: 3px 0;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .read-more-btn:hover {
+      color: var(--secondary);
+      transform: translateX(4px);
+    }
+
+    .read-more-btn i {
+      font-size: 0.75rem;
+      transition: var(--transition);
+    }
+
+    .read-more-btn:hover i {
+      transform: translateX(2px);
+    }
+
+    /* front image & body */
+    .project-img-wrapper {
+      width: 100%;
+      height: 220px;
+      overflow: hidden;
+      background: #1a1925;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .project-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+      filter: brightness(0.9) contrast(1.05);
+    }
+
+    .project-card:hover .project-img-wrapper img {
+      transform: scale(1.04);
+      filter: brightness(1);
+    }
+
+    .project-img-wrapper .click-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(20, 19, 27, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: var(--transition);
+      backdrop-filter: blur(3px);
+      pointer-events: none;
+    }
+
+    .project-img-wrapper:hover .click-overlay {
+      opacity: 1;
+    }
+
+    .project-img-wrapper .click-overlay i {
+      font-size: 2.2rem;
+      color: var(--primary);
+      background: var(--bg-dark-1);
+      padding: 14px 16px;
+      border-radius: 60px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      transform: scale(0.8);
+      transition: var(--transition);
+    }
+
+    .project-img-wrapper:hover .click-overlay i {
+      transform: scale(1);
+    }
+
+    .project-card .card-body {
+      padding: 18px 18px 22px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card .card-body h5 {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--text-light);
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    .project-card .card-body p {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 400;
+      flex: 1;
+      line-height: 1.6;
+    }
+
+    /* Flip trigger buttons */
+    .flip-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(201, 169, 110, 0.08);
+      color: var(--primary);
+      padding: 5px 14px 5px 10px;
+      border-radius: 40px;
+      border: 1px solid rgba(201, 169, 110, 0.15);
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 5px;
+      width: fit-content;
+      align-self: flex-start;
+      backdrop-filter: blur(4px);
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .flip-trigger i {
+      font-size: 0.8rem;
+      transition: var(--transition);
+    }
+
+    .flip-trigger:hover {
+      background: rgba(201, 169, 110, 0.15);
+      border-color: var(--primary);
+      transform: scale(1.02);
+    }
+
+    .flip-back .flip-trigger-back {
+      margin-top: 6px;
+      align-self: flex-start;
+      flex-shrink: 0;
+    }
+
+    .flip-back .btn-github-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-soft);
+      padding: 5px 14px;
+      border-radius: 40px;
+      border: 1px solid rgba(201, 169, 110, 0.15);
+      font-weight: 500;
+      font-size: 0.75rem;
+      transition: var(--transition);
+      text-decoration: none;
+      margin-top: 5px;
+      align-self: flex-start;
+      flex-shrink: 0;
+    }
+
+    .flip-back .btn-github-back i {
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+
+    .flip-back .btn-github-back:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #14131b;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(201, 169, 110, 0.15);
+    }
+
+    .flip-back .btn-github-back:hover i {
+      color: #14131b;
+    }
+
+    .btn-github {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-soft);
+      padding: 5px 14px;
+      border-radius: 40px;
+      border: 1px solid rgba(201, 169, 110, 0.15);
+      font-weight: 500;
+      font-size: 0.75rem;
+      transition: var(--transition);
+      text-decoration: none;
+      width: fit-content;
+      margin-top: 5px;
+      align-self: flex-start;
+    }
+
+    .btn-github i {
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+
+    .btn-github:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #14131b;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(201, 169, 110, 0.15);
+    }
+
+    .btn-github:hover i {
+      color: #14131b;
+    }
+
+    /* ----- BACK BUTTON ----- */
+    .btn-back {
+      background: transparent;
+      border: 1px solid rgba(201, 169, 110, 0.2);
+      color: var(--text-soft);
+      padding: 0.7rem 2.4rem;
+      border-radius: var(--radius-pill);
+      font-weight: 600;
+      transition: var(--transition);
+      backdrop-filter: blur(4px);
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-back:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #14131b;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(201, 169, 110, 0.15);
+    }
+
+    /* ----- LIGHTBOX ----- */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 15, 0.92);
+      backdrop-filter: blur(18px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
+    .lightbox.active {
+      display: flex;
+    }
+    .lightbox img {
+      max-width: 90%;
+      max-height: 85%;
+      border-radius: 24px;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8);
+      object-fit: contain;
+      border: 2px solid rgba(201, 169, 110, 0.08);
+      animation: fadeIn 0.25s ease;
+    }
+    .lightbox .close-btn {
+      position: absolute;
+      top: 28px;
+      right: 36px;
+      font-size: 2.6rem;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.02);
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .lightbox .close-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      transform: rotate(90deg);
+      color: var(--primary);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* ----- RESPONSIVE ----- */
+    @media (max-width: 576px) {
+      .project-img-wrapper {
+        height: 160px;
+      }
+      .page-title {
+        font-size: 2.2rem;
+      }
+      .lightbox .close-btn {
+        top: 16px;
+        right: 16px;
+        width: 44px;
+        height: 44px;
+        font-size: 2rem;
+      }
+      .flip-back {
+        padding: 14px 12px;
+      }
+      .flip-back .project-detail {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container py-3">
+
+  <!-- Header with gold accent -->
+  <div class="text-center mb-4">
+    <h2 class="page-title">More <span>Projects</span></h2>
+    <p class="sub-head"><i class="fas fa-sync-alt me-2" style="color: var(--primary);"></i> Click <span style="color:var(--primary);">Flip</span> to see details • Click images to enlarge</p>
+  </div>
+
+  <!-- Projects grid with FLIP CARDS + READ MORE -->
+  <div class="row g-4 justify-content-center">
+
+    <!-- Project 4: Winlog - FLIP CARD with READ MORE -->
+    <div class="col-md-6 col-lg-5">
+      <div class="card project-card" id="card4">
+        <div class="flip-inner">
+          <!-- FRONT -->
+          <div class="flip-front">
+            <div class="project-img-wrapper" data-image="winlog.jpeg">
+              <img src="winlog.jpeg" class="card-img-top" alt="Winlog project" />
+              <div class="click-overlay"><i class="fas fa-search-plus"></i></div>
+            </div>
+            <div class="card-body">
+              <h5>Winlog</h5>
+              <p>Web-based project management and tracking application designed to streamline project workflows, monitor progress, manage resources, and improve team collaboration.</p>
+              <a href="https://github.com/Chithira2002/Winlog.git" target="_blank" class="btn-github">
+                <i class="fab fa-github"></i> View on GitHub
+              </a>
+              <span class="flip-trigger flip-trigger-front" data-card="card4"><i class="fas fa-sync-alt"></i> </span>
+            </div>
+          </div>
+          <!-- BACK with READ MORE -->
+          <div class="flip-back">
+            <h5>📊 Winlog</h5>
+            <div class="project-detail"><i class="fas fa-info-circle"></i> <strong>Overview</strong> – WinLog is a comprehensive management and tracking system designed to streamline business operations by providing a centralized platform for recording, monitoring, and managing project-related information.</div>
+            <div class="project-detail"><i class="fas fa-code"></i> <strong>Technologies Used</strong> – Frontend: HTML5, CSS3, JavaScript, Bootstrap • Backend: Python & Django • Database: SQlite </div>
+            <div class="project-detail"><i class="fas fa-tools"></i> <strong>Development Tools</strong> – Visual Studio / Visual Studio Code</div>
+            <div class="project-detail"><i class="fas fa-laptop"></i> <strong>Operating System</strong> – Windows 10 / Windows 11</div>
+
+            <!-- Extra content (hidden initially) -->
+            <div class="extra-content" id="extra-card4">
+              <div class="project-detail"><i class="fas fa-star"></i> <strong>Key Features</strong></div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Centralized project data management</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> User authentication with role-based access</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Real-time activity tracking</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Interactive dashboard with key metrics</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Data entry, editing, and record maintenance</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Advanced search and filtering</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Automated report generation and export</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Notification and alert management</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Complete audit trail for user actions</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Secure data storage and backup</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Responsive, user-friendly interface</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Enhanced team collaboration</div>
+              <div class="project-detail"><i class="fas fa-cogs"></i> <strong>Working of the System</strong> – The WinLog system operates through a centralized platform where authorized users can securely log in and access project-related information based on their roles and permissions. Users can create, update, and manage records, while the system stores all data in a centralized database for easy retrieval and monitoring. The application tracks activities in real time, maintains data accuracy, and provides dashboards and reports for analyzing progress and performance. Administrators can oversee system operations, manage user access, and generate reports, enabling efficient decision-making and improved operational control across the organization.</div>
+            </div>
+
+            <button class="read-more-btn" data-target="extra-card4">
+              <i class="fas fa-chevron-down"></i> <span>Read More</span>
+            </button>
+
+            <a href="https://github.com/Chithira2002/Winlog.git" target="_blank" class="btn-github-back">
+              <i class="fab fa-github"></i> View on GitHub
+            </a>
+            <span class="flip-trigger flip-trigger-back" data-card="card4"><i class="fas fa-undo-alt"></i> Flip Back</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project 5: Inventory Management System - FLIP CARD with READ MORE -->
+    <div class="col-md-6 col-lg-5">
+      <div class="card project-card" id="card5">
+        <div class="flip-inner">
+          <!-- FRONT -->
+          <div class="flip-front">
+            <div class="project-img-wrapper" data-image="inventory.png">
+              <img src="inventory.png" class="card-img-top" alt="Inventory Management System" />
+              <div class="click-overlay"><i class="fas fa-search-plus"></i></div>
+            </div>
+            <div class="card-body">
+              <h5>Inventory Management</h5>
+              <p>Web-based application used to manage and track inventory efficiently. Add items, record stock received, issue stock, and monitor inventory levels.</p>
+              <a href="https://github.com/Chithira2002/Inventory.git" target="_blank" class="btn-github">
+                <i class="fab fa-github"></i> View on GitHub
+              </a>
+              <span class="flip-trigger flip-trigger-front" data-card="card5"><i class="fas fa-sync-alt"></i> </span>
+            </div>
+          </div>
+          <!-- BACK with READ MORE -->
+          <div class="flip-back">
+            <h5>📦 Inventory Management</h5>
+            <div class="project-detail"><i class="fas fa-info-circle"></i> <strong>Overview</strong> – The Inventory Management System is a web-based application designed to manage and monitor inventory operations efficiently. The system allows users to maintain item records, add stock through Goods In transactions, remove stock through Goods Out transactions, and track current inventory levels. It also manages expiry dates for perishable products and provides various reports such as Stock Reports, Expired Items Reports, Low Stock Reports, Goods In Reports, and Goods Out Reports. The system helps organizations maintain accurate inventory records, reduce stock losses, and improve inventory control.</div>
+            <div class="project-detail"><i class="fas fa-code"></i> <strong>Technologies Used</strong> – Python • Django Framework • HTML5 • CSS3 • SQLite Database</div>
+            <div class="project-detail"><i class="fas fa-tools"></i> <strong>Development Tools</strong> – Visual Studio Code (VS Code) </div>
+            <div class="project-detail"><i class="fas fa-laptop"></i> <strong>Operating System</strong> – Windows 10 / Windows 11 </div>
+
+            <!-- Extra content (hidden initially) -->
+            <div class="extra-content" id="extra-card5">
+              <div class="project-detail"><i class="fas fa-star"></i> <strong>Key Features</strong></div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Add, Edit, Delete, and Search Items</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Goods In (Stock Entry)</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Goods Out (Stock Issue)</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Automatic Stock Calculation</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Expiry Date Management</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Dashboard with Statistics</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Stock Report Generation</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Expired Items Report</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Low Stock Report</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Goods In Report</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> Goods Out Report</div>
+              <div class="project-detail"><i class="fas fa-arrow-right"></i> User-Friendly Interface</div>
+              <div class="project-detail"><i class="fas fa-cogs"></i> <strong>Working of the System</strong> – The system begins with the creation of inventory items through the Master Item module. When stock is received, users record the quantity using the Goods In module. When products are issued or sold, the quantity is recorded through the Goods Out module. The system automatically calculates the available stock by subtracting issued quantities from received quantities while excluding expired items. Users can view real-time inventory status through the dashboard and generate various reports to monitor stock availability, expired products, low-stock items, and inventory transactions.</div>
+            </div>
+
+            <button class="read-more-btn" data-target="extra-card5">
+              <i class="fas fa-chevron-down"></i> <span>Read More</span>
+            </button>
+
+            <span class="flip-trigger flip-trigger-back" data-card="card5"><i class="fas fa-undo-alt"></i> Flip Back</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Back button -->
+  <div class="text-center mt-5 pt-3">
+    <a href="index.html#projects" class="btn-back">
+      <i class="fas fa-arrow-left"></i> Back to Portfolio
+    </a>
+  </div>
+</div>
+
+<!-- ========== LIGHTBOX ========== -->
+<div class="lightbox" id="lightbox">
+  <span class="close-btn" id="closeLightbox"><i class="fas fa-times"></i></span>
+  <img id="lightboxImg" src="" alt="Full view" />
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  (function() {
+    // LIGHTBOX
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const closeBtn = document.getElementById('closeLightbox');
+
+    const wrappers = document.querySelectorAll('.project-img-wrapper');
+
+    wrappers.forEach(wrapper => {
+      wrapper.addEventListener('click', function(e) {
+        const imgSrc = this.getAttribute('data-image');
+        if (imgSrc) {
+          lightboxImg.src = imgSrc;
+          lightbox.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    closeBtn.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', function(e) {
+      if (e.target === this) closeLightbox();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    // FLIP LOGIC
+    document.querySelectorAll('.flip-trigger').forEach(trigger => {
+      trigger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const cardId = this.getAttribute('data-card');
+        const card = document.getElementById(cardId);
+        if (card) {
+          card.classList.toggle('flipped');
+        }
+      });
+    });
+
+    // READ MORE / READ LESS LOGIC
+    document.querySelectorAll('.read-more-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const targetId = this.getAttribute('data-target');
+        const extraContent = document.getElementById(targetId);
+        const icon = this.querySelector('i');
+        const span = this.querySelector('span');
+
+        if (extraContent) {
+          extraContent.classList.toggle('show');
+          if (extraContent.classList.contains('show')) {
+            icon.className = 'fas fa-chevron-up';
+            span.textContent = 'Read Less';
+          } else {
+            icon.className = 'fas fa-chevron-down';
+            span.textContent = 'Read More';
+          }
+        }
+      });
+    });
+
+  })();
+</script>
+
+</body>
+</html>
